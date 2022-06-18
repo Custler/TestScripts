@@ -35,8 +35,8 @@ echo "ATTENTION: Node going to repair DB! If it will unsuccess, the DB will be d
 
 # Wait for finish repair DB 
 while true;do
-    Curr_DB_state="$($CALL_RC -jc 'getstats' | jq '.sync_status')"
-    if [[ "$Curr_DB_state" == "synchronization_by_blocks" ]] || [[ "$Curr_DB_state" == "synchronization finished" ]];then
+    Curr_DB_state="$($CALL_RC -jc 'getstats' | jq -r '.sync_status')"
+    if [[ "$Curr_DB_state" == "synchronization_by_blocks" ]] || [[ "$Curr_DB_state" == "synchronization_finished" ]];then
         break
     fi
     if [[ "$Curr_DB_state" == "db_broken" ]];then
