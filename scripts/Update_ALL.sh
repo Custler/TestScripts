@@ -125,7 +125,7 @@ if ${Enable_Node_Autoupdate};then
     #===========================================================
     # Update NODE
     ${SCRIPT_DIR}/Update_Node_to_new_release.sh
-    if [[ $? -gt0 ]];then
+    if [[ $? -gt 0 ]];then
         echo "###-ERROR(line $LINENO): Node update error!"
         exit 1
     fi
