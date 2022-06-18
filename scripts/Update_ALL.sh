@@ -129,9 +129,6 @@ if ${Enable_Node_Autoupdate};then
         echo "###-ERROR(line $LINENO): Node update error!"
         exit 1
     fi
-    #===========================================================
-    # 
-    ${SCRIPT_DIR}/PostUpdate_Actions.sh
 else
     echo "###-ALARM: Node update is DISABLED. Your node can harm the network."
     "${SCRIPT_DIR}/Send_msg_toTelBot.sh" "$HOSTNAME Server" "$Tg_SOS_sign ###-ALARM: Node update is DISABLED. Your node can harm the network." 2>&1 > /dev/null 

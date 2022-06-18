@@ -172,6 +172,10 @@ echo "INFO: Node updated. Service restarted. Current versions: node ver: ${EverN
 "${SCRIPT_DIR}/Send_msg_toTelBot.sh" "$HOSTNAME Server" "$Tg_CheckMark INFO: Node updated. Service restarted. Current versions: node ver: ${EverNode_Version} node commit: ${Node_commit_from_bin}, console - ${Console_Version}, tonos-cli - ${TonosCLI_Version}" 2>&1 > /dev/null
 
 #===========================================================
+#
+${SCRIPT_DIR}/PostUpdate_Actions.sh
+
+#===========================================================
 
 echo "+++INFO: $(basename "$0") FINISHED $(date +%s) / $(date  +'%F %T %Z')"
 echo "================================================================================================"
