@@ -56,13 +56,16 @@ fi
 #===========================================================
 # check LNIC for new update and times
 LINC_present=false
+Console_commit="$RCONS_GIT_COMMIT"
 LNI_Info="$( get_LastNodeInfo )"
 if [[ $? -ne 0 ]];then
     echo "###-WARNING(line $LINENO): Last node info from contract is empty."
 else
     export LINC_present=true
     LastCommit="$(echo $LNI_info|jq '.LastCommit')"
-    export Node_remote_commit="$(dec2hex $LastCommit | |tr "[:upper:]" "[:lower:]")"
+    export Node_remote_commit="$(dec2hex $LastCommit | tr "[:upper:]" "[:lower:]")"
+    LNIC_Console_commit_dec=$(echo ${LNI_Info} | jq -r '.ConsoleCommit')
+    export Console_commit="$(dec2hex $LNIC_Console_commit_dec | tr '[:upper:]' '[:lower:]')"
 fi
 
 #===========================================================
@@ -91,13 +94,17 @@ if $LINC_present;then
     Validator_addr=`cat ${KEYS_DIR}/${VALIDATOR_NAME}.addr`
     declare -i Validator_Upd_Ord=$(( $(hex2dec "$(echo $Validator_addr|cut -c 33,34)") ))
     declare -i CurrNodeUpdateTime=$((UpdateDuration / 256 * Validator_Upd_Ord + UpdateStartTime))
-    if [[ $CurrNodeUpdateTime -gt $((CurrTime + 1801)) ]];then
+    if [[ $CurrNodeUpdateTime -gt $CurrTime ]];then
         echo "###-ERROR(line $LINENO): Update time for your node is not come yet. Your node update time is $(TD_unix2human $CurrNodeUpdateTime)"
         echo "+++INFO: $(basename "$0") FINISHED $(date +%s) / $(date  +'%F %T %Z')"
         echo "================================================================================================"
         exit 0
     fi
 fi
+
+# set new commits in env.sh for Nodes_Build script
+sed -i.bak "s/export RNODE_GIT_COMMIT=.*/export RNODE_GIT_COMMIT=$Node_remote_commit/" "${SCRIPT_DIR}/env.sh"
+sed -i.bak "s/export RCONS_GIT_COMMIT=.*/export RCONS_GIT_COMMIT=$Console_commit/" "${SCRIPT_DIR}/env.sh"
 
 echo "INFO: Node going to update from $Node_local_commit to new commit $Node_remote_commit"
 "${SCRIPT_DIR}/Send_msg_toTelBot.sh" "$HOSTNAME Server" "$Tg_Warn_sign INFO: Node going to update from $Node_local_commit to new commit $Node_remote_commit" 2>&1 > /dev/null
@@ -153,14 +160,6 @@ if [[ -z "$(pgrep rnode)" ]];then
     exit 1
 fi
 
-################################################################################################
-# DB repair checking
-# If DB cannot be repaired - clear DB and start sync from scratch
-#
-#
-#
-################################################################################################
-
 #===========================================================
 # Check and show the Node version
 EverNode_Version="$(${NODE_BIN_DIR}/rnode -V | grep -i 'TON Node, version' | awk '{print $4}')"
@@ -170,22 +169,6 @@ TonosCLI_Version="$(${NODE_BIN_DIR}/tonos-cli -V | grep -i 'tonos_cli' | awk '{p
 echo "INFO: Node updated. Service restarted. Current versions: node ver: ${EverNode_Version} SupBlock: ${NodeSupBlkVer} node commit: ${Node_commit_from_bin}, console - ${Console_Version}, tonos-cli - ${TonosCLI_Version}"
 "${SCRIPT_DIR}/Send_msg_toTelBot.sh" "$HOSTNAME Server" "$Tg_CheckMark INFO: Node updated. Service restarted. Current versions: node ver: ${EverNode_Version} node commit: ${Node_commit_from_bin}, console - ${Console_Version}, tonos-cli - ${TonosCLI_Version}" 2>&1 > /dev/null
 
-#===========================================================
-# Check if we missed the election due to long update
-declare -i CurrTime=$(date +%s)
-declare -i election_id=$(Get_Current_Elections_ID)
-if [[ $election_id -gt 0 ]];then
-    NetConfigP15="$(Get_NetConfig_P15)"
-    declare -i EndBefore=$(echo $NetConfigP15|awk '{print $3}')
-    if [[ $CurrTime -le $((election_id - EndBefore - 180)) ]];then
-        ${SCRIPT_DIR}/prepare_elections.sh && ${SCRIPT_DIR}/take_part_in_elections.sh
-        ${SCRIPT_DIR}/next_elect_set_time.sh && ${SCRIPT_DIR}/part_check.sh
-    else
-        ${SCRIPT_DIR}/next_elect_set_time.sh
-    fi
-else
-    ${SCRIPT_DIR}/next_elect_set_time.sh
-fi
 #===========================================================
 
 echo "+++INFO: $(basename "$0") FINISHED $(date +%s) / $(date  +'%F %T %Z')"

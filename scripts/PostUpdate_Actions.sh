@@ -33,7 +33,27 @@ source "${SCRIPT_DIR}/functions.shinc"
 echo "ATTENTION: Node going to repair DB! If it will unsuccess, the DB will be deleted and resynced.."
 "${SCRIPT_DIR}/Send_msg_toTelBot.sh" "$HOSTNAME Server" "$Tg_Warn_sign ATTENTION: Node going to repair DB! If it will unsuccess, the DB will be deleted and resynced.." 2>&1 > /dev/null
 
+# Wait for finish repair DB 
+while true;do
+    Curr_DB_state="$($CALL_RC -jc 'getstats' | jq '.sync_status')"
+    if [[ "$Curr_DB_state" == "synchronization_by_blocks" ]] || [[ "$Curr_DB_state" == "synchronization finished" ]];then
+        break
+    fi
+    if [[ "$Curr_DB_state" == "db_broken" ]];then
+        echo "ATTENTION: Node found DB is unrepairable, the DB will be deleted and resynced.. Old DB will saved in $TON_WORK_DIR/rnode_DB_backup_${Curr_UnixTime}"
+        "${SCRIPT_DIR}/Send_msg_toTelBot.sh" "$HOSTNAME Server" "$Tg_Warn_sign ATTENTION: Node found DB is unrepairable, the DB will be deleted and resynced.. Old DB will saved in $TON_WORK_DIR/rnode_DB_backup_${Curr_UnixTime}" 2>&1 > /dev/null
+        bash ${SCRIPT_DIR}/DB_reset_only.sh
+    fi
+    sleep 10
+done
 
+echo "ATTENTION: DB check & repair finished, wait for sync.."
+"${SCRIPT_DIR}/Send_msg_toTelBot.sh" "$HOSTNAME Server" "$Tg_Warn_sign ATTENTION: DB check & repair finished, wait for sync.." 2>&1 > /dev/null
+
+${SCRIPT_DIR}/wait_for_sync.sh
+
+echo "ATTENTION: DB synced. Check and participate in elections, if any.."
+"${SCRIPT_DIR}/Send_msg_toTelBot.sh" "$HOSTNAME Server" "$Tg_Warn_sign ATTENTION: DB synced. Check and participate in elections, if any.." 2>&1 > /dev/null
 
 #===========================================================
 # Check if we missed the election due to long update
@@ -52,6 +72,8 @@ else
     ${SCRIPT_DIR}/next_elect_set_time.sh
 fi
 
+echo "ATTENTION: Update finished."
+"${SCRIPT_DIR}/Send_msg_toTelBot.sh" "$HOSTNAME Server" "$Tg_Warn_sign ATTENTION: Update finished." 2>&1 > /dev/null
 
 # echo "--- nothing to do"
 #################################################################
