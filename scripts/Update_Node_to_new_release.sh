@@ -63,8 +63,8 @@ if [[ $? -ne 0 ]];then
     echo "###-WARNING(line $LINENO): Last node info from contract is empty."
 else
     export LINC_present=true
-    LastCommit_dec="$(echo $LNI_Info|jq '.LastCommit')"
-    export Node_remote_commit="$(dec2hex $LastCommit_dec | tr "[:upper:]" "[:lower:]")"
+    Node_commit_dec=$(echo ${LNI_Info} | jq -r '.LastCommit')
+    export Node_remote_commit="$(dec2hex $Node_commit_dec | tr '[:upper:]' '[:lower:]')"
     LNIC_Console_commit_dec=$(echo ${LNI_Info} | jq -r '.ConsoleCommit')
     export Console_commit="$(dec2hex $LNIC_Console_commit_dec | tr '[:upper:]' '[:lower:]')"
     echo "LNIC present. New node commit: $Node_remote_commit, Console commit: $Console_commit"
