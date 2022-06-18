@@ -56,16 +56,18 @@ fi
 #===========================================================
 # check LNIC for new update and times
 LINC_present=false
+LastCommit="$RNODE_GIT_COMMIT"
 Console_commit="$RCONS_GIT_COMMIT"
 LNI_Info="$( get_LastNodeInfo )"
 if [[ $? -ne 0 ]];then
     echo "###-WARNING(line $LINENO): Last node info from contract is empty."
 else
     export LINC_present=true
-    LastCommit="$(echo $LNI_info|jq '.LastCommit')"
-    export Node_remote_commit="$(dec2hex $LastCommit | tr "[:upper:]" "[:lower:]")"
+    LastCommit_dec="$(echo $LNI_Info|jq '.LastCommit')"
+    export Node_remote_commit="$(dec2hex $LastCommit_dec | tr "[:upper:]" "[:lower:]")"
     LNIC_Console_commit_dec=$(echo ${LNI_Info} | jq -r '.ConsoleCommit')
     export Console_commit="$(dec2hex $LNIC_Console_commit_dec | tr '[:upper:]' '[:lower:]')"
+    echo "LNIC present. New node commit: $Node_remote_commit, Console commit: $Console_commit"
 fi
 
 #===========================================================
