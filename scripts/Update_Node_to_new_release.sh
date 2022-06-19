@@ -56,7 +56,6 @@ fi
 #===========================================================
 # check LNIC for new update and times
 LINC_present=false
-LastCommit="$RNODE_GIT_COMMIT"
 Console_commit="$RCONS_GIT_COMMIT"
 LNI_Info="$( get_LastNodeInfo )"
 if [[ $? -ne 0 ]];then
@@ -105,7 +104,8 @@ if $LINC_present;then
 fi
 
 # set new commits in env.sh for Nodes_Build script
-sed -i.bak "s/export RNODE_GIT_COMMIT=.*/export RNODE_GIT_COMMIT=$Node_remote_commit/" "${SCRIPT_DIR}/env.sh"
+# sed -i.bak "s/export RNODE_GIT_COMMIT=.*/export RNODE_GIT_COMMIT=$Node_remote_commit/" "${SCRIPT_DIR}/env.sh"
+sed -i.bak "/ton-labs-node.git/,/\"NETWORK_TYPE\" == \"rfld.ton.dev\"/ s/export RNODE_GIT_COMMIT=.*/export RNODE_GIT_COMMIT=\"$Node_remote_commit\"/" "${SCRIPT_DIR}/env.sh"
 sed -i.bak "s/export RCONS_GIT_COMMIT=.*/export RCONS_GIT_COMMIT=$Console_commit/" "${SCRIPT_DIR}/env.sh"
 
 echo "INFO: Node going to update from $Node_local_commit to new commit $Node_remote_commit"

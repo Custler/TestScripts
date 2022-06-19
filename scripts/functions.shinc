@@ -561,10 +561,10 @@ function Get_Supported_Blocks_Version() {
     # get Git supported_block
     case "${NODE_TYPE}" in
         RUST)
-            NodeGit_Sup_Blk=`cat ${RNODE_SRC_DIR}/src/validating_utils.rs |grep -A1 'supported_version'|tail -1|tr -d ' '`
+            NodeGit_Sup_Blk=`cat ${RNODE_SRC_DIR}/src/validating_utils.rs 2>/dev/null|grep -A1 'supported_version'|tail -1|tr -d ' '`
             ;;
         CPP)
-            NodeGit_Sup_Blk=`cat ${TON_SRC_DIR}/tdutils/td/utils/common.h |grep 'BLK_SUPPORTED_VER'|awk '{print $5}'|tr -d ';'`
+            NodeGit_Sup_Blk=`cat ${TON_SRC_DIR}/tdutils/td/utils/common.h 2>/dev/null|grep 'BLK_SUPPORTED_VER'|awk '{print $5}'|tr -d ';'`
             ;;
         *)
             echoerr "###-ERROR(${FUNCNAME[0]} line $LINENO): Unknown NODE TYPE!!!"
