@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# (C) Sergey Tyurin  2022-05-21 11:00:00
+# (C) Sergey Tyurin  2022-06-19 11:00:00
 
 # Disclaimer
 ##################################################################################################################
@@ -31,13 +31,17 @@ echo "+++INFO: $(basename "$0") BEGIN $(date +%s) / $(date)"
 
 elector_addr="$(Get_Elector_Address)"
 election_id=$(Get_Current_Elections_ID)
+NetConfigP15="$(Get_NetConfig_P15)"
+declare -i EndBefore=$(echo $NetConfigP15|awk '{print $3}')
+declare -i CurrTime=$(date +%s)
+
 echo "INFO: Current Election ID: ${election_id}"
 
 # wait for elections
 echo "Wait for elections start"
 while true; do
-    election_id=$(Get_Current_Elections_ID)
-    if [[ "$election_id" != "0" ]];then
+    declare -i election_id=$(Get_Current_Elections_ID)
+    if [[ $election_id -gt 0 ]];then
         echo "Elections #$election_id started"
         break
     fi
@@ -45,8 +49,9 @@ done
 
 echo "Now going to cycle to get validators info until elections closed"
 while true; do
+    CurrTime=$(date +%s)
     election_id=$(Get_Current_Elections_ID)
-    if [[ "$election_id" != "0" ]];then
+    if [[ $CurrTime -le $((election_id - EndBefore - 120)) ]];then
         Last_elections=$election_id
         Elector_Parts_List="$($CALL_TC -j runget ${elector_addr} participant_list_extended)"
         echo "$Elector_Parts_List" |jq '.value4'|grep -v '\[\|\]'|tr -d ' '|tr -d ','|tr -d '"'|sed 's/^0x//'  > ${ELECTIONS_HISTORY_DIR}/${election_id}_val_list.txt
