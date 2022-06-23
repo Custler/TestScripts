@@ -130,7 +130,7 @@ export C_ENGINE_ADDITIONAL_PARAMS=""
 
 #=====================================================
 # GIT addresses & commits
-export RUST_VERSION="1.60.0"
+export RUST_VERSION="1.61.0"
 export BOOST_VERSION="1.76.0"
 export MIN_TC_VERSION="0.26.7"
 export MIN_RC_VERSION="0.1.262"
