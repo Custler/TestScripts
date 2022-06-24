@@ -43,7 +43,7 @@ function TD_unix2human() {
 Net="main"
 DApp_URL="https://${Net}.ton.dev"
 
-ValAddrList_File="1655907589_AddrInfo_Validators_List.json"
+ValAddrList_File="1656038661_AddrInfo_Validators_List.json"
 ElectionsCycle_ID=${ValAddrList_File%%_*}
 
 ValAddrList_json="$(cat "${ValAddrList_File}"|jq 'to_entries')"
@@ -64,21 +64,35 @@ declare -i Blk_24=0
 declare -i Blk_26=0
 declare -i Blk_27=0
 declare -i Blk_30=0
+declare -i Custler_Nodes=0
 for (( i=0; i < NodesQty; i++ ));do
     CurPub=$(echo "${ValAddrList_json}"|jq -r ".[$i].value.pubkey")
     CurrNodeBlkVer=`curl -sS -X POST -g -H "Content-Type: application/json" "${DApp_URL}/graphql" -d \
     '{"query": "query {blocks(filter: { gen_utime: {gt: '$Time_Start'}, created_by: {eq: \"'$CurPub'\"} }limit: 1) {id, gen_software_version} }"}' \
     |jq '.data.blocks[0].gen_software_version'`
 
+    ADNL_hex="$(echo "${ValAddrList_json}"|jq ".[$i].value.ADNL")"
+    if [[ -n "$ADNL_hex" ]];then
+        ADNL_B64="$(echo "$ADNL_hex" | xxd -r -p | base64)"
+        # echo "$ADNL_hex"
+        # echo "$ADNL_B64"
+        IP_Port="$(timeout 30 ${HOME}/bin/adnl_resolve $ADNL_B64 ./common/config/ton-global.config.json 2>/dev/null | grep 'Found'|awk '{print $2}')"
+        # $? -eq 124
+        # echo "IP:port = $IP_Port"
+        # timeout 5 $(IP_Port="$(${HOME}/bin/adnl_resolve $ADNL_B64 ./common/config/ton-global.config.json 2>/dev/null | grep 'Found'|awk '{print $2}')")
+        if [[ "$(echo "$IP_Port"|awk -F':' '{print $2}')" == "48888" ]] || [[ "$(echo "$IP_Port"|awk -F':' '{print $2}')" == "49999" ]];then
+            ((Custler_Nodes+=1))
+        fi
+    fi 
     if [[ $CurrNodeBlkVer -lt 26 ]] && [[ $CurrNodeBlkVer -gt 0 ]];then
-    #if [[ $CurrNodeBlkVer -eq 0 ]];then
         ((OldBlockNodes+=1))
         echo "------------------------------------------"
-        # echo "$i - Block version: $CurrNodeBlkVer : "
-        # echo "$CurPub"
         Stake_nt=$(echo "${ValAddrList_json}"|jq -r ".[$i].value.stake_nt")
-        echo "MSIG:   $(echo "${ValAddrList_json}"|jq ".[$i].value.MSIG") BlkVer: $CurrNodeBlkVer Stake: $(echo $((Stake_nt / 1000000000))|LC_ALL=en_US.UTF-8 xargs printf "%'.f\n")"
+        echo "$OldBlockNodes BlkVer: $CurrNodeBlkVer Stake: $(echo $((Stake_nt / 1000000000))|LC_ALL=en_US.UTF-8 xargs printf "%'.f\n")"
+        # echo "$CurPub"
+        echo "MSIG:   $(echo "${ValAddrList_json}"|jq ".[$i].value.MSIG") "
         echo "DePool: $(echo "${ValAddrList_json}"|jq ".[$i].value.depool")"
+        echo "IP:port = $IP_Port"
     fi
     [[ $CurrNodeBlkVer -eq 0 ]] && ((NoBlockNodes+=1))
     [[ $CurrNodeBlkVer -eq 22 ]] && ((Blk_22+=1))
@@ -96,7 +110,7 @@ echo " Nodes blk ver 24: $Blk_24"
 echo " Nodes blk ver 26: $Blk_26"
 echo " Nodes blk ver 27: $Blk_27"
 echo " Nodes blk ver 30: $Blk_30"
-
+echo " Custler scripts Nodes: $Custler_Nodes"
 
 echo "Total nodes in round $ElectionsCycle_ID / $(TD_unix2human $ElectionsCycle_ID) : $NodesQty"
 echo "Nodes with old blocks =         $OldBlockNodes"
@@ -111,14 +125,19 @@ for (( i=0; i < NodesQty; i++ ));do
     '{"query": "query {blocks(filter: { gen_utime: {gt: '$ElectionsCycle_ID'}, created_by: {eq: \"'$CurPub'\"} }limit: 1) {id, gen_software_version} }"}' \
     |jq '.data.blocks[0].gen_software_version'`
 
-    # if [[ $CurrNodeBlkVer -lt 26 ]] && [[ $CurrNodeBlkVer -gt 0 ]];then
     if [[ $CurrNodeBlkVer -eq 0 ]];then
         ((ZeroBlkNodes+=1))
         echo "------------------------------------------"
-        echo "$ZeroBlkNodes : "
         Stake_nt=$(echo "${ValAddrList_json}"|jq -r ".[$i].value.stake_nt")
-        echo "MSIG:   $(echo "${ValAddrList_json}"|jq ".[$i].value.MSIG") BlkVer: $CurrNodeBlkVer Stake: $(echo $((Stake_nt / 1000000000))|LC_ALL=en_US.UTF-8 xargs printf "%'.f\n")"
+        echo "$ZeroBlkNodes BlkVer: $CurrNodeBlkVer Stake: $(echo $((Stake_nt / 1000000000))|LC_ALL=en_US.UTF-8 xargs printf "%'.f\n") "
+        echo "MSIG:   $(echo "${ValAddrList_json}"|jq ".[$i].value.MSIG") "
         echo "DePool: $(echo "${ValAddrList_json}"|jq ".[$i].value.depool")"
+        ADNL_hex="$(echo "${ValAddrList_json}"|jq ".[$i].value.ADNL")"
+        if [[ -n "$ADNL_hex" ]];then
+            ADNL_B64="$(echo "$ADNL_hex" | xxd -r -p | base64)"
+            IP_Port="$(timeout 30 ${HOME}/bin/adnl_resolve $ADNL_B64 ./common/config/ton-global.config.json 2>/dev/null | grep 'Found'|awk '{print $2}')"
+        fi 
+        echo "IP:port = $IP_Port"
     fi
 done
 echo "------------------------------------------"
