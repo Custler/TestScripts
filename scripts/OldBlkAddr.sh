@@ -43,7 +43,7 @@ function TD_unix2human() {
 Net="main"
 DApp_URL="https://${Net}.ton.dev"
 
-ValAddrList_File="1656038661_AddrInfo_Validators_List.json"
+ValAddrList_File="1656270478_AddrInfo_Validators_List.json"
 ElectionsCycle_ID=${ValAddrList_File%%_*}
 
 ValAddrList_json="$(cat "${ValAddrList_File}"|jq 'to_entries')"
@@ -51,7 +51,8 @@ declare -i NodesQty=$(echo "${ValAddrList_json}"|jq '.|length')
 
 # looks for pubs with blk# 22
 search_blk_ver=22
-Time_Start=$(($(date +%s) - 3600))
+Time_Inerval=3600
+Time_Start=$(($(date +%s) - Time_Inerval))
 
 # curl -sS -X POST -g -H "Content-Type: application/json" "${DApp_URL}/graphql" -d "{\"query\": \"query {blocks(filter: {gen_utime: {gt: ${Time_Start}}, gen_software_version: {eq: $search_blk_ver} }limit: 1000) {id, created_by} }\"}"|jq '.data.blocks[].created_by'
 
@@ -64,13 +65,14 @@ declare -i Blk_24=0
 declare -i Blk_26=0
 declare -i Blk_27=0
 declare -i Blk_30=0
-declare -i Custler_Nodes=0
+declare -i Custler_CU=0
+declare -i Custler_MED=0
 for (( i=0; i < NodesQty; i++ ));do
     CurPub=$(echo "${ValAddrList_json}"|jq -r ".[$i].value.pubkey")
     CurrNodeBlkVer=`curl -sS -X POST -g -H "Content-Type: application/json" "${DApp_URL}/graphql" -d \
     '{"query": "query {blocks(filter: { gen_utime: {gt: '$Time_Start'}, created_by: {eq: \"'$CurPub'\"} }limit: 1) {id, gen_software_version} }"}' \
     |jq '.data.blocks[0].gen_software_version'`
-
+    Hoster=""
     ADNL_hex="$(echo "${ValAddrList_json}"|jq ".[$i].value.ADNL")"
     if [[ -n "$ADNL_hex" ]];then
         ADNL_B64="$(echo "$ADNL_hex" | xxd -r -p | base64)"
@@ -80,11 +82,12 @@ for (( i=0; i < NodesQty; i++ ));do
         # $? -eq 124
         # echo "IP:port = $IP_Port"
         # timeout 5 $(IP_Port="$(${HOME}/bin/adnl_resolve $ADNL_B64 ./common/config/ton-global.config.json 2>/dev/null | grep 'Found'|awk '{print $2}')")
-        if [[ "$(echo "$IP_Port"|awk -F':' '{print $2}')" == "48888" ]] || [[ "$(echo "$IP_Port"|awk -F':' '{print $2}')" == "49999" ]];then
-            ((Custler_Nodes+=1))
-        fi
+        # curl "http://ipwho.is/8.8.4.4"
+        [[ -n "$IP_Port" ]] && Hoster="$(curl "http://ipwho.is/${IP_Port%%:*}" 2>/dev/null|jq '.connection.org , .city , .country'|tr -d "\n")"
+        [[ "$(echo "$IP_Port"|awk -F':' '{print $2}')" == "48888" ]] && ((Custler_CU+=1))
+        [[ "$(echo "$IP_Port"|awk -F':' '{print $2}')" == "49999" ]] && ((Custler_MED+=1))
     fi 
-    if [[ $CurrNodeBlkVer -lt 26 ]] && [[ $CurrNodeBlkVer -gt 0 ]];then
+    if [[ $CurrNodeBlkVer -lt 30 ]] && [[ $CurrNodeBlkVer -gt 0 ]];then
         ((OldBlockNodes+=1))
         echo "------------------------------------------"
         Stake_nt=$(echo "${ValAddrList_json}"|jq -r ".[$i].value.stake_nt")
@@ -92,7 +95,7 @@ for (( i=0; i < NodesQty; i++ ));do
         # echo "$CurPub"
         echo "MSIG:   $(echo "${ValAddrList_json}"|jq ".[$i].value.MSIG") "
         echo "DePool: $(echo "${ValAddrList_json}"|jq ".[$i].value.depool")"
-        echo "IP:port = $IP_Port"
+        echo "IP:port = $IP_Port  $Hoster"
     fi
     [[ $CurrNodeBlkVer -eq 0 ]] && ((NoBlockNodes+=1))
     [[ $CurrNodeBlkVer -eq 22 ]] && ((Blk_22+=1))
@@ -103,18 +106,19 @@ for (( i=0; i < NodesQty; i++ ));do
 done
 echo "------------------------------------------"
 echo
-echo "Summary for last hour since $(TD_unix2human $Time_Start):"
+echo "Summary for last $((Time_Inerval / 60)) min since $(TD_unix2human $Time_Start):"
 echo "Total nodes: $NodesQty"
 echo " Nodes blk ver 22: $Blk_22"
 echo " Nodes blk ver 24: $Blk_24"
 echo " Nodes blk ver 26: $Blk_26"
 echo " Nodes blk ver 27: $Blk_27"
 echo " Nodes blk ver 30: $Blk_30"
-echo " Custler scripts Nodes: $Custler_Nodes"
+echo " custler.uninode Nodes: $Custler_CU"
+echo " main.evs.dev    Nodes: $Custler_MED"
 
 echo "Total nodes in round $ElectionsCycle_ID / $(TD_unix2human $ElectionsCycle_ID) : $NodesQty"
 echo "Nodes with old blocks =         $OldBlockNodes"
-echo "Nodes qty not sign any blocks = $NoBlockNodes"
+echo "Nodes which not made any blocks = $NoBlockNodes"
 echo
 
 echo "Nodes not make any blocks (not in MC or WC) in current round $ElectionsCycle_ID / $(TD_unix2human $ElectionsCycle_ID):  "
@@ -124,7 +128,7 @@ for (( i=0; i < NodesQty; i++ ));do
     CurrNodeBlkVer=`curl -sS -X POST -g -H "Content-Type: application/json" "${DApp_URL}/graphql" -d \
     '{"query": "query {blocks(filter: { gen_utime: {gt: '$ElectionsCycle_ID'}, created_by: {eq: \"'$CurPub'\"} }limit: 1) {id, gen_software_version} }"}' \
     |jq '.data.blocks[0].gen_software_version'`
-
+    Hoster=""
     if [[ $CurrNodeBlkVer -eq 0 ]];then
         ((ZeroBlkNodes+=1))
         echo "------------------------------------------"
@@ -136,8 +140,10 @@ for (( i=0; i < NodesQty; i++ ));do
         if [[ -n "$ADNL_hex" ]];then
             ADNL_B64="$(echo "$ADNL_hex" | xxd -r -p | base64)"
             IP_Port="$(timeout 30 ${HOME}/bin/adnl_resolve $ADNL_B64 ./common/config/ton-global.config.json 2>/dev/null | grep 'Found'|awk '{print $2}')"
+            # curl "http://ipwho.is/8.8.4.4"
+            [[ -n "$IP_Port" ]] && Hoster="$(curl "http://ipwho.is/${IP_Port%%:*}" 2>/dev/null|jq '.connection.org , .city , .country'|tr -d "\n")"
         fi 
-        echo "IP:port = $IP_Port"
+        echo "IP:port = $IP_Port  $Hoster"
     fi
 done
 echo "------------------------------------------"
