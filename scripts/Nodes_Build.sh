@@ -64,7 +64,7 @@ esac
 
 #=====================================================
 # Packages set for different OSes
-PKGS_FreeBSD="mc libtool perl5 automake llvm-devel gmake git jq wget gawk base64 gflags ccache cmake curl gperf openssl ninja lzlib vim sysinfo logrotate gsl p7zip zstd pkgconf python google-perftools"
+PKGS_FreeBSD="mc libtool perl5 automake llvm-devel gmake git jq wget gawk base64 gflags ccache cmake curl gperf openssl ninja lzlib vim sysinfo logrotate gsl 7-zip zstd pkgconf python google-perftools"
 PKGS_CentOS="curl jq wget bc vim libtool logrotate openssl-devel clang llvm-devel ccache cmake ninja-build gperf gawk gflags snappy snappy-devel zlib zlib-devel bzip2 bzip2-devel lz4-devel libmicrohttpd-devel readline-devel p7zip libzstd-devel gperftools gperftools-devel"
 PKGS_Ubuntu="git mc curl build-essential libssl-dev automake libtool clang llvm-dev jq vim cmake ninja-build ccache gawk gperf texlive-science doxygen-latex libgflags-dev libmicrohttpd-dev libreadline-dev libz-dev pkg-config zlib1g-dev p7zip-full bc libzstd-dev libgoogle-perftools-dev"
 
@@ -127,6 +127,7 @@ case "$OS_SYSTEM" in
             $PKG_MNGR install -y gcc-toolset-10-toolchain
             source /opt/rh/gcc-toolset-10/enable
         fi
+        sudo systemctl daemon-reload
         ;;
 
     Oracle)
@@ -144,6 +145,7 @@ case "$OS_SYSTEM" in
             $PKG_MNGR install -y gcc-toolset-10-toolchain
             source /opt/rh/gcc-toolset-10/enable
         fi
+        sudo systemctl daemon-reload
         ;;
 
     Fedora)
@@ -159,6 +161,7 @@ case "$OS_SYSTEM" in
             $PKG_MNGR install -y gcc-toolset-10-toolchain
             source /opt/rh/gcc-toolset-10/enable
         fi
+        sudo systemctl daemon-reload
         ;;
 
     Ubuntu|Debian)
@@ -181,6 +184,7 @@ case "$OS_SYSTEM" in
             cd libmicrohttpd-0.9.70
             ./configure && make && sudo make install
         fi
+        sudo systemctl daemon-reload
         ;;
 
     *)

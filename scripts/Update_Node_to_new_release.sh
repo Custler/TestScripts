@@ -62,10 +62,8 @@ if [[ $? -ne 0 ]];then
     echo "###-WARNING(line $LINENO): Last node info from contract is empty."
 else
     export LINC_present=true
-    Node_commit_dec=$(echo ${LNI_Info} | jq -r '.LastCommit')
-    export Node_remote_commit="$(dec2hex $Node_commit_dec | tr '[:upper:]' '[:lower:]')"
-    LNIC_Console_commit_dec=$(echo ${LNI_Info} | jq -r '.ConsoleCommit')
-    export Console_commit="$(dec2hex $LNIC_Console_commit_dec | tr '[:upper:]' '[:lower:]')"
+    export Node_remote_commit=$(echo ${LNI_Info} | jq -r '.LastCommit')
+    export Console_commit=$(echo ${LNI_Info} | jq -r '.ConsoleCommit')
     echo "LNIC present. New node commit: $Node_remote_commit, Console commit: $Console_commit"
 fi
 
@@ -101,29 +99,29 @@ if $LINC_present;then
         echo "================================================================================================"
         exit 0
     fi
-fi
 
-# set new commits in env.sh for Nodes_Build script
-# sed -i.bak "s/export RNODE_GIT_COMMIT=.*/export RNODE_GIT_COMMIT=$Node_remote_commit/" "${SCRIPT_DIR}/env.sh"
-sed -i.bak "/ton-labs-node.git/,/\"NETWORK_TYPE\" == \"rfld.ton.dev\"/ s/export RNODE_GIT_COMMIT=.*/export RNODE_GIT_COMMIT=\"$Node_remote_commit\"/" "${SCRIPT_DIR}/env.sh"
-sed -i.bak "s/export RCONS_GIT_COMMIT=.*/export RCONS_GIT_COMMIT=$Console_commit/" "${SCRIPT_DIR}/env.sh"
+    # set new commits in env.sh for Nodes_Build script
+    sed -i.bak "s/export RNODE_GIT_COMMIT=.*/export RNODE_GIT_COMMIT=$Node_remote_commit/" "${SCRIPT_DIR}/env.sh"
+    # sed -i.bak "/ton-labs-node.git/,/\"NETWORK_TYPE\" == \"rfld.ton.dev\"/ s/export RNODE_GIT_COMMIT=.*/export RNODE_GIT_COMMIT=\"$Node_remote_commit\"/" "${SCRIPT_DIR}/env.sh"
+    sed -i.bak "s/export RCONS_GIT_COMMIT=.*/export RCONS_GIT_COMMIT=$Console_commit/" "${SCRIPT_DIR}/env.sh"
+fi
 
 echo "INFO: Node going to update from $Node_local_commit to new commit $Node_remote_commit"
 "${SCRIPT_DIR}/Send_msg_toTelBot.sh" "$HOSTNAME Server" "$Tg_Warn_sign INFO: Node going to update from $Node_local_commit to new commit $Node_remote_commit" 2>&1 > /dev/null
 
 #===========================================================
 # Get recommended Rust version from node repo
-Node_Build_Rust_Version="$(curl https://raw.githubusercontent.com/tonlabs/ton-labs-node/master/recomended_rust 2>/dev/null)"
-V1=$(echo $Node_Build_Rust_Version|awk -F'.' '{print $1}')
-V2=$(echo $Node_Build_Rust_Version|awk -F'.' '{print $2}')
-V3=$(echo $Node_Build_Rust_Version|awk -F'.' '{print $3}')
-if [[ $V1 =~ ^[[:digit:]]+$ ]] && [[ $V2 =~ ^[[:digit:]]+$ ]] && [[ $V3 =~ ^[[:digit:]]+$ ]];then
-    declare -i Rust_Version_NUM=$(echo "$Node_Build_Rust_Version" | awk -F'.' '{printf("%d%03d%03d\n", $1,$2,$3)}')
-    if [[ $Rust_Version_NUM -ne 0 ]];then
-        sed -i.bak "s/export RUST_VERSION=.*/export RUST_VERSION=$Node_Build_Rust_Version/" "${SCRIPT_DIR}/env.sh"
-        source "${SCRIPT_DIR}/env.sh"
-    fi
-fi
+# Node_Build_Rust_Version="$(curl https://raw.githubusercontent.com/tonlabs/ton-labs-node/master/recomended_rust 2>/dev/null)"
+# V1=$(echo $Node_Build_Rust_Version|awk -F'.' '{print $1}')
+# V2=$(echo $Node_Build_Rust_Version|awk -F'.' '{print $2}')
+# V3=$(echo $Node_Build_Rust_Version|awk -F'.' '{print $3}')
+# if [[ $V1 =~ ^[[:digit:]]+$ ]] && [[ $V2 =~ ^[[:digit:]]+$ ]] && [[ $V3 =~ ^[[:digit:]]+$ ]];then
+#     declare -i Rust_Version_NUM=$(echo "$Node_Build_Rust_Version" | awk -F'.' '{printf("%d%03d%03d\n", $1,$2,$3)}')
+#     if [[ $Rust_Version_NUM -ne 0 ]];then
+#         sed -i.bak "s/export RUST_VERSION=.*/export RUST_VERSION=$Node_Build_Rust_Version/" "${SCRIPT_DIR}/env.sh"
+#         source "${SCRIPT_DIR}/env.sh"
+#     fi
+# fi
 
 # --features "compression,external_db,metrics"
 export RNODE_FEATURES=""
@@ -154,7 +152,7 @@ ${SCRIPT_DIR}/nets_config_update.sh
 
 #===========================================================
 # Restart service
-sudo service tonnode restart
+sudo service $ServiceName restart
 
 if [[ -z "$(pgrep rnode)" ]];then
     echo "###-ERROR(line $LINENO): Node process not started!"
@@ -173,7 +171,7 @@ echo "INFO: Node updated. Service restarted. Current versions: node ver: ${EverN
 
 #===========================================================
 #
-${SCRIPT_DIR}/PostUpdate_Actions.sh
+${SCRIPT_DIR}/DB_Repair_Actions.sh
 
 #===========================================================
 

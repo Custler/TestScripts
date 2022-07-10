@@ -40,7 +40,7 @@ export LNIC_ADDRESS="0:bdcefecaae5d07d926f1fa881ea5b61d81ea748bd02136c0dbe766043
 #=====================================================
 # Network related variables
 export NETWORK_TYPE="main.ton.dev"      # can be main.* / net.* / fld.* / rfld.* / rustnet.*
-export Node_Blk_Min_Ver=27
+export Node_Blk_Min_Ver=30
 export NODE_TYPE="RUST"                 # Can be CPP / RUST. 
 export ELECTOR_TYPE="fift"
 export NODE_WC=0                        # Node WorkChain 
@@ -119,7 +119,7 @@ done
 export NODE_IP_ADDR
 
 export ServiceName="tonnode"
-export ADNL_PORT="48888"
+export ADNL_PORT="47777"
 export NODE_ADDRESS="${NODE_IP_ADDR}:${ADNL_PORT}"
 export LITESERVER_IP="127.0.0.1"
 export LITESERVER_PORT="3031"
@@ -147,10 +147,10 @@ fi
 
 export RNODE_GIT_REPO="https://github.com/tonlabs/ton-labs-node.git"
 export RNODE_GIT_COMMIT="master"
-if [[ "$NETWORK_TYPE" == "rfld.ton.dev" ]];then
-    export RNODE_GIT_REPO="https://github.com/NilFoundation/rust-ton.git"
-    export RNODE_GIT_COMMIT="master"
-fi
+# if [[ "$NETWORK_TYPE" == "rfld.ton.dev" ]];then
+#     export RNODE_GIT_REPO="https://github.com/NilFoundation/rust-ton.git"
+#     export RNODE_GIT_COMMIT="master"
+# fi
 
 export RCONS_GIT_REPO="https://github.com/tonlabs/ton-labs-node-tools.git"
 export RCONS_GIT_COMMIT="master"
@@ -215,7 +215,7 @@ export CRYPTO_DIR=$TON_SRC_DIR/crypto
 export ContractsDIR="${NODE_TOP_DIR}/ton-labs-contracts"
 
 export DSCs_DIR="${ContractsDIR}/solidity/depool"
-[[ "$NETWORK_TYPE" == "rfld.ton.dev" ]] && export DSCs_DIR="${CONFIGS_DIR}/depool_RFLD"
+# [[ "$NETWORK_TYPE" == "rfld.ton.dev" ]] && export DSCs_DIR="${CONFIGS_DIR}/depool_RFLD"
 export DePool_ABI="$DSCs_DIR/DePool.abi.json"
 
 export FSCs_DIR="${CRYPTO_DIR}/smartcont"

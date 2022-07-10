@@ -24,6 +24,12 @@ source "${SCRIPT_DIR}/env.sh"
 source "${SCRIPT_DIR}/functions.shinc"
 
 #=================================================
+echo -e "$(DispEnvInfo)"
+echo
+echo -e "$(Determine_Current_Network)"
+echo
+
+#=================================================
 # Get LNIC boc
 
 if [[ "$(Get_Account_Info "$LNIC_ADDRESS"|awk '{print $1}')" != "Active" ]];then

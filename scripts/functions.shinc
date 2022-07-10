@@ -509,7 +509,7 @@ function get_LastNodeInfo {
     echo $GetABI > Get_ABI.json
     $CALL_TC -j run --boc ${LNIC_ADDRESS##*:}.boc --abi Get_ABI.json ABI {} | jq -r '.ABI_7z_hex' > LNIC_ABI_7z_hex.txt
     xxd -r -p LNIC_ABI_7z_hex.txt > LNIC_ABI.7z
-    7za x -y LNIC_ABI.7z 2>&1 > /dev/null
+    7z x -y LNIC_ABI.7z 2>&1 > /dev/null
     if [[ ! -e "${ABI}" ]];then
         echoerr "###-ERROR(${FUNCNAME[0]} line $LINENO): Cannot get LNIC ABI from state."
         echo "${LNI_JSON}"
