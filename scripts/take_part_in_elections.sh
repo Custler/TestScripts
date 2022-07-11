@@ -97,6 +97,11 @@ echo "INFO: validator account address: $Validator_addr"
 [[ ! -d ${ELECTIONS_WORK_DIR} ]] && mkdir -p ${ELECTIONS_WORK_DIR}
 chmod +x ${ELECTIONS_WORK_DIR}
 Validator_Acc_Info="$(Get_Account_Info ${Validator_addr})"
+Validator_Acc_Status=`echo "$Validator_Acc_Info" | awk '{print $1}'`
+if [[ "$Validator_Acc_Status" != "Active" ]];then
+    echo "###-ERROR(line $LINENO): Validator msig status is NOT 'Active' (not deployed)!"
+    exit 1
+fi
 declare -i Validator_Acc_LT=`echo "$Validator_Acc_Info" | awk '{print $3}'`
 
 ##############################################################################
