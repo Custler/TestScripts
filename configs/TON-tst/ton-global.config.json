@@ -1,0 +1,33 @@
+{
+    "@type": "config.global",
+    "dht": {
+        "@type": "dht.config.global",
+        "k": 6,
+        "a": 3,
+        "static_nodes": {
+            "@type": "dht.nodes",
+            "nodes": [
+{"@type":"dht.node","id":{"@type":"pub.ed25519","key":"cl4qGUjTLIoNWuLmX09tUReoPuj7eyl5XSR/eB85uAw="},"addr_list":{"@type":"adnl.addressList","addrs":[{"@type":"adnl.address.udp","ip":1266130883,"port":37873}],"version":0,"reinit_date":0,"priority":0,"expire_at":0},"version":-1,"signature":"u47qHi/a3QuwmJkkHVCpPUXzrlVeSLm89fFJZAC0+Dbv/3D2uk1nl8sMf3FKqU6N1HiTE+43EXb9rJZDOBDDAg=="}
+,{"@type":"dht.node","id":{"@type":"pub.ed25519","key":"QsRU5XLa3qREvXdnALegltaU9KBX5XINkuksxu7OBBY="},"addr_list":{"@type":"adnl.addressList","addrs":[{"@type":"adnl.address.udp","ip":1266129909,"port":37873}],"version":0,"reinit_date":0,"priority":0,"expire_at":0},"version":-1,"signature":"C90aMJ3WCCAFaNzHx/XtKTAxhODo7yUE7lewHMnV4d3SjAG9Y/tbuUzgcr+6CPKocP46an1E+DIjDomLWdLTAA=="}
+,{"@type":"dht.node","id":{"@type":"pub.ed25519","key":"QGxJXfOPWw6YhmXNtGxcdGH2P4tShm2lN5sfd2hl88I="},"addr_list":{"@type":"adnl.addressList","addrs":[{"@type":"adnl.address.udp","ip":1266129573,"port":37873}],"version":0,"reinit_date":0,"priority":0,"expire_at":0},"version":-1,"signature":"czr3DNYJCHM9/vrrAtzT5NQgnsIeIiaJfXi8xdkJ9tlNjWzOJxH33nxq9vpI4REMOqdriMhVb1+GE8RmOIMmBw=="}
+,{"@type":"dht.node","id":{"@type":"pub.ed25519","key":"ZY05SVVTrfCV5ISi4vnXnaBRTNw7R6OXiPLImpn3+EA="},"addr_list":{"@type":"adnl.addressList","addrs":[{"@type":"adnl.address.udp","ip":1266129082,"port":37873}],"version":0,"reinit_date":0,"priority":0,"expire_at":0},"version":-1,"signature":"RBjSIK8DrfiKc6xDW8UvufapxZVRI5MnAMo82M+E5NDy3ibfYDauGbe3b2Ki1eSItq6qU4NOCFCJpvzY5xoZAg=="}
+,{"@type":"dht.node","id":{"@type":"pub.ed25519","key":"3+H/0q0Dj+SwcIfCVXUd/lUSkj4cgQ2ry/IsRnZTuOQ="},"addr_list":{"@type":"adnl.addressList","addrs":[{"@type":"adnl.address.udp","ip":1266127082,"port":37873}],"version":0,"reinit_date":0,"priority":0,"expire_at":0},"version":-1,"signature":"3Bjw8v2K338DwabXxzp5r02wm1Izy4+qcNSZs5K9EA6WULQdjzaxl7La0cTnyE0wjmrtRLZLx90wiL3d+hUECw=="}
+,{"@type":"dht.node","id":{"@type":"pub.ed25519","key":"xUWUkVMOL+tY49jAGvTHDrS19l5cXHptnv+WTyqPncs="},"addr_list":{"@type":"adnl.addressList","addrs":[{"@type":"adnl.address.udp","ip":1266124671,"port":37873}],"version":0,"reinit_date":0,"priority":0,"expire_at":0},"version":-1,"signature":"TrldEKB7w4W6AVj4UjMeBvIko9HENTFtf5MARF7+e+rnSVGf4WBpHAOR6kZ3jeoKy292MHZXBNYwdtAcwNoAAA=="}
+,{"@type":"dht.node","id":{"@type":"pub.ed25519","key":"9NoQkc9HF8GZspn9tfegwwMpDhKgY7e1SW/WuwUwTpM="},"addr_list":{"@type":"adnl.addressList","addrs":[{"@type":"adnl.address.udp","ip":1266123893,"port":37873}],"version":0,"reinit_date":0,"priority":0,"expire_at":0},"version":-1,"signature":"beOXFFklygEDvXg+t+pEqBnZM18b68SH5tPDCU8H8ftAGJo3PEc+CMWPLcvnUUdt9GY4cjzYdWUedPV/yHVmCg=="}
+,{"@type":"dht.node","id":{"@type":"pub.ed25519","key":"u5tDNOfbwtClFE7bYnb+zNY5iHQa2VJYZ0zdXASfmjc="},"addr_list":{"@type":"adnl.addressList","addrs":[{"@type":"adnl.address.udp","ip":-1587437928,"port":37873}],"version":0,"reinit_date":0,"priority":0,"expire_at":0},"version":-1,"signature":"BMZsobKipeOjmxvcdySvI3RRejTEVMOPCOnCHcWetZES0FlZwjPozOpcHzc50j64f+PRul1mjGljM7ogrc3HDQ=="}
+,{"@type":"dht.node","id":{"@type":"pub.ed25519","key":"zLryyT62zv/Y2AO7T7mHr5LQdxQau5ywkFPhQnNyoF8="},"addr_list":{"@type":"adnl.addressList","addrs":[{"@type":"adnl.address.udp","ip":-1587438146,"port":37873}],"version":0,"reinit_date":0,"priority":0,"expire_at":0},"version":-1,"signature":"0HSZ4Fa3SiZ4z7wCoeZ0nNVSmr12cxnxo3m9NolCwGM15veu+wo0Z7K2Cqf11BPSzxYEOofT9pn+BZetA6s+BA=="}
+,{"@type":"dht.node","id":{"@type":"pub.ed25519","key":"BgW5bxw5ix/zmQG8b8mJOemP2RZXz5+VL0OyDLpVE6o="},"addr_list":{"@type":"adnl.addressList","addrs":[{"@type":"adnl.address.udp","ip":-1587442440,"port":37873}],"version":0,"reinit_date":0,"priority":0,"expire_at":0},"version":-1,"signature":"itqdbPXNTVTe6e64fhboPhU2XwpIBF0KUmIBqahHAGB4NVogB/7/fthPxI38toeMG00U60Pwvu3Zturh6ylzBQ=="}
+            ]
+        }
+    },
+    "validator": {
+        "@type": "validator.config.global",
+        "zero_state": {
+            "workchain": -1,
+            "shard": -9223372036854775808,
+            "seqno": 0,
+            "root_hash": "HASmb95IuQmjhjjmeCVsluWEUYPGzrM8xsPFfRWkO6w=",
+            "file_hash": "pFd9xZgFqaiS+1OPbsXm9bb6pyh37nDy6Wp4Sb75YhE="
+        }
+    }
+}
