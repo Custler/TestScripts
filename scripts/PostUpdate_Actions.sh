@@ -30,12 +30,8 @@ source "${SCRIPT_DIR}/env.sh"
 # ${SCRIPT_DIR}/next_elect_set_time.sh
 #################################################################
 # echo "Nothing to do."
-# Distro_Name="$(cat /etc/os-release | grep "PRETTY_NAME="|awk -F'[" ]' '{print $2}')"
-if [[ "$(uname -s)" == "FreeBSD" ]];then
-    sudo pkg install -y 7-zip
-fi
 
-./setup_as_service.sh
+source "${SCRIPT_DIR}/functions.shinc"
 
 echo "+++INFO: $(basename "$0") FINISHED $(date +%s) / $(date  +'%F %T %Z')"
 echo "================================================================================================"

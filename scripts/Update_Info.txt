@@ -1,1 +1,1 @@
----WARN: Removed legacy code for C++ node, fixes and improv
+---ATTENTION: Put Project_Id and access_key into env.sh appropriate variables from dashboard.evercloud.dev to have access to DAPP by tonos-cli
