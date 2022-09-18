@@ -253,7 +253,7 @@ export BoldText="\e[1m"
 export Tg_CheckMark=$(echo -e "\U0002705")
 export Tg_SOS_sign=$(echo -e "\U0001F198")
 export Tg_Warn_sign=$(echo -e "\U000026A0")
-
+export Tg_Exclaim_sign=$(echo -e "\U000203C")
 #=================================================
 # var for icinga monitoring
 export prepElections="${TON_LOG_DIR:-$R_LOG_DIR}/prepForElections"

@@ -42,7 +42,13 @@ if [[ -z "$(cat ${SCRIPT_DIR}/env.sh | grep 'export DAPP_Project_id')" ]];then
     sed -i.bak '/# Networks endpoints/p; s/# Networks endpoints.*/export DAPP_Project_id=""/' ${SCRIPT_DIR}/env.sh
 fi
 
-"${SCRIPT_DIR}/Send_msg_toTelBot.sh" "$HOSTNAME Server" "$Tg_CheckMark $(cat ${SCRIPT_DIR}/Update_Info.txt)" 2>&1 > /dev/null
+if [[ -z "$(cat ${SCRIPT_DIR}/env.sh | grep 'export Tg_Exclaim_sign')" ]];then
+    sed -i.bak '/export Tg_Warn_sign/p; s/export Tg_Warn_sign.*/export Tg_Exclaim_sign=$(echo -e "\\U000203C")/' ${SCRIPT_DIR}/env.sh
+fi
+
+source "${SCRIPT_DIR}/env.sh"
+
+"${SCRIPT_DIR}/Send_msg_toTelBot.sh" "$HOSTNAME Server" "$Tg_Exclaim_sign $(cat ${SCRIPT_DIR}/Update_Info.txt) $Tg_Exclaim_sign" 2>&1 > /dev/null
 
 #################################################################
 # echo "Nothing to do."
