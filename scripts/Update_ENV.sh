@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# (C) Sergey Tyurin  2022-06-10 13:00:00
+# (C) Sergey Tyurin  2022-09-19 13:00:00
 
 # Disclaimer
 ##################################################################################################################
@@ -76,9 +76,6 @@ if [[ -z "$(cat env.sh|grep 'CALL_7Z')" ]];then
         }
     }' env.sh.bak > env.sh
 fi
-#################################################################
-# Updating tonos-cli to version supported endpoint authorization
-./upd_tonos-cli.sh
 
 ##########################################################
 
