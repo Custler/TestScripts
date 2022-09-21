@@ -25,9 +25,21 @@ echo "+++INFO: $(basename "$0") BEGIN $(date +%s) / $(date)"
 
 SCRIPT_DIR=`cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P`
 source "${SCRIPT_DIR}/env.sh"
-source $HOME/.cargo/env
 
-cd $HOME
+#=====================================================
+# Install or upgrade RUST
+declare -i Curr_Rust_Ver_NUM=$(rustc -V | awk '{print $2}'| awk -F'.' '{printf("%d%03d%03d\n", $1,$2,$3)}')
+declare -i ENV_Rust_Ver_NUM=$(echo $RUST_VERSION | awk -F'.' '{printf("%d%03d%03d\n", $1,$2,$3)}')
+if [[ $Curr_Rust_Ver_NUM -lt ENV_Rust_Ver_NUM ]];then
+    echo
+    echo '################################################'
+    echo "---INFO: Install RUST ${RUST_VERSION}"
+    cd $HOME
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain ${RUST_VERSION} -y
+    source $HOME/.cargo/env
+    cargo install cargo-binutils
+fi 
+
 #=====================================================
 # Build tonos-cli
 [[ ! -z ${TONOS_CLI_SRC_DIR} ]] && rm -rf "${TONOS_CLI_SRC_DIR}"

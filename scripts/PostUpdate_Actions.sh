@@ -40,14 +40,14 @@ fi
 declare -i ENV_MIN_TC_VERSION=1$(echo $MIN_TC_VERSION | awk -F'.' '{printf("%d%03d%03d\n", $1,$2,$3)}')
 declare -i NUM_MIN_TC_VERSION=$(( LNIC_MIN_TC_VERSION>=ENV_MIN_TC_VERSION ? LNIC_MIN_TC_VERSION : ENV_MIN_TC_VERSION ))
 
-declare -i CurrCurr_TC_Ver_NUM_TC_ver=1$($NODE_BIN_DIR/tonos-cli -j version | jq -r '."tonos-cli"' | awk -F'.' '{printf("%d%03d%03d\n", $1,$2,$3)}')
+declare -i CurrCurr_TC_Ver_NUM=1$($NODE_BIN_DIR/tonos-cli -j version | jq -r '."tonos-cli"' | awk -F'.' '{printf("%d%03d%03d\n", $1,$2,$3)}')
 
-if [[ $Curr_TC_Ver_NUM -lt $NUM_MIN_TC_VERSION ]];then
+if [[ $CurrCurr_TC_Ver_NUM -lt $NUM_MIN_TC_VERSION ]];then
     ./upd_tonos-cli.sh
     if [[ $? -gt 0 ]];then
         "${SCRIPT_DIR}/Send_msg_toTelBot.sh" "$HOSTNAME Server" "$Tg_SOS_sign tonos-cli update FAILED $Tg_Exclaim_sign" 2>&1 > /dev/null
     else
-        "${SCRIPT_DIR}/Send_msg_toTelBot.sh" "$HOSTNAME Server" "$Tg_CheckMark tonos-cli updated: \n $(${NODE_BIN_DIR}/tonos-cli version)" 2>&1 > /dev/null
+        "${SCRIPT_DIR}/Send_msg_toTelBot.sh" "$HOSTNAME Server" "$Tg_CheckMark tonos-cli updated: $(${NODE_BIN_DIR}/tonos-cli version)" 2>&1 > /dev/null
     fi
 fi
 

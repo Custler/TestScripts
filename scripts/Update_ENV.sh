@@ -48,7 +48,9 @@ fi
 
 source "${SCRIPT_DIR}/env.sh"
 
-"${SCRIPT_DIR}/Send_msg_toTelBot.sh" "$HOSTNAME Server" "$Tg_Exclaim_sign $(cat ${SCRIPT_DIR}/Update_Info.txt) $Tg_Exclaim_sign" 2>&1 > /dev/null
+if [[ -z "$DAPP_Project_id" ]];then
+    "${SCRIPT_DIR}/Send_msg_toTelBot.sh" "$HOSTNAME Server" "$Tg_Exclaim_sign $(cat ${SCRIPT_DIR}/Update_Info.txt) $Tg_Exclaim_sign" 2>&1 > /dev/null
+fi
 
 #################################################################
 # echo "Nothing to do."
