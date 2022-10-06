@@ -85,7 +85,7 @@ fi
 NetName="${NETWORK_TYPE%%.*}"
 case "$NetName" in
     main)
-        export DApp_URL=${Main_DApp_URL}
+        export DApp_URL=${Main_DApp_URL}/$DAPP_Project_id
         $NODE_BIN_DIR/tonos-cli config endpoint reset &>/dev/null
         $NODE_BIN_DIR/tonos-cli config endpoint add $NETWORK_TYPE $MainNet_DApp_List &>/dev/null
         $NODE_BIN_DIR/tonos-cli config --url $NETWORK_TYPE &>/dev/null
@@ -94,7 +94,7 @@ case "$NetName" in
         export ELECTOR_TYPE="${ELECTOR_TYPE:=fift}"                          # can be 'solidity' or 'fift'
         ;;
     net)
-        export DApp_URL=${DevNet_DApp_URL}
+        export DApp_URL=${DevNet_DApp_URL}/$DAPP_Project_id
         $NODE_BIN_DIR/tonos-cli config endpoint reset &>/dev/null
         $NODE_BIN_DIR/tonos-cli config endpoint add $NETWORK_TYPE $DevNet_DApp_List &>/dev/null
         $NODE_BIN_DIR/tonos-cli config --url $NETWORK_TYPE &>/dev/null
