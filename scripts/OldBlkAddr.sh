@@ -48,7 +48,7 @@ HistHours=$2
 ############################
 # token for ipinfo.io should be set in env.sh
 # ipi_token=""
-${ipi_token:?"ERROR: token for ipinfo.io should be set here or in env.sh"}
+: ${ipi_token:?"ERROR: token for ipinfo.io should be set here or in env.sh"}
 ############################
 
 if [[ ! -f $ValAddrList_File ]];then
