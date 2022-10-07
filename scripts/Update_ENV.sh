@@ -63,7 +63,8 @@ if [[ -z "$DAPP_Project_id" ]];then
 fi
 
 #################################################################
-# echo "Nothing to do."
+# set node min block version
+sed -i.bak 's|export Node_Blk_Min_Ver=.*|export Node_Blk_Min_Ver=32|' "${SCRIPT_DIR}/env.sh"
 
 #################################################################
 # Fix binaries names for new release 7-zip and old p7zip
