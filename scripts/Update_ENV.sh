@@ -42,6 +42,16 @@ if [[ -z "$(cat ${SCRIPT_DIR}/env.sh | grep 'export DAPP_Project_id')" ]];then
     sed -i.bak '/# Networks endpoints/p; s/# Networks endpoints.*/export DAPP_Project_id=""/' ${SCRIPT_DIR}/env.sh
 fi
 
+if [[ -z "$(cat ${SCRIPT_DIR}/env.sh | grep 'export Auth_key_Head')" ]];then
+    sed -i.bak '/# Networks endpoints/p; s/# Networks endpoints.*/export Auth_key_Head="Authorization: Basic "/' ${SCRIPT_DIR}/env.sh
+fi
+
+sed -i.bak 's|export Main_DApp_URL=.*|export Main_DApp_URL="https://mainnet.evercloud.dev"|' "${SCRIPT_DIR}/env.sh"
+sed -i.bak 's|export MainNet_DApp_List=.*|export MainNet_DApp_List="https://https://mainnet.evercloud.dev,https://eri01.main.everos.dev,https://gra01.main.everos.dev,https://gra02.main.everos.dev,https://lim01.main.everos.dev,https://rbx01.main.everos.dev"|' "${SCRIPT_DIR}/env.sh"
+
+sed -i.bak 's|export DevNet_DApp_URL=.*|export DevNet_DApp_URL="https://net.evercloud.dev"|' "${SCRIPT_DIR}/env.sh"
+sed -i.bak 's|export DevNet_DApp_List=.*|export DevNet_DApp_List="https://https://net.evercloud.dev,https://eri01.net.everos.dev,https://rbx01.net.everos.dev,https://gra01.net.everos.dev"|' "${SCRIPT_DIR}/env.sh"
+
 if [[ -z "$(cat ${SCRIPT_DIR}/env.sh | grep 'export Tg_Exclaim_sign')" ]];then
     sed -i.bak '/export Tg_Warn_sign/p; s/export Tg_Warn_sign.*/export Tg_Exclaim_sign=$(echo -e "\\U000203C")/' ${SCRIPT_DIR}/env.sh
 fi
