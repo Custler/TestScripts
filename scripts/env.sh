@@ -53,6 +53,7 @@ export MAX_FACTOR=3
 export DAPP_Project_id=""               # from 2022.09.09 needs for DApp access (man - https://docs.everos.dev/evernode-platform/products/evercloud/get-started)
 export DAPP_access_key=""
 export Auth_key_Head="Authorization: Basic "    # header for curl: -H "$Auth_key_Head"
+export ipi_token=""                     # token for ipinfo.io
 
 export Main_DApp_URL="https://mainnet.evercloud.dev"
 export MainNet_DApp_List="https://https://mainnet.evercloud.dev,https://eri01.main.everos.dev,https://gra01.main.everos.dev,https://gra02.main.everos.dev,https://lim01.main.everos.dev,https://rbx01.main.everos.dev"
