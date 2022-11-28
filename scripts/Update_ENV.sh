@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# (C) Sergey Tyurin  2022-09-19 13:00:00
+# (C) Sergey Tyurin  2022-11-28 13:00:00
 
 # Disclaimer
 ##################################################################################################################
@@ -27,9 +27,10 @@ source "${SCRIPT_DIR}/env.sh"
 
 #################################################################
 # Set rust version
-sed -i.bak "s/export RUST_VERSION=.*/export RUST_VERSION=\"1.63.0\"/" "${SCRIPT_DIR}/env.sh"
+sed -i.bak "s/export RUST_VERSION=.*/export RUST_VERSION=\"1.65.0\"/" "${SCRIPT_DIR}/env.sh"
+sed -i.bak "s/export MIN_RC_VERSION=.*/export MIN_RC_VERSION=\"0.1.297\"/" "${SCRIPT_DIR}/env.sh"
 
-sed -i.bak "s/export MIN_TC_VERSION=.*/export MIN_TC_VERSION=\"0.28.5\"/" "${SCRIPT_DIR}/env.sh"
+sed -i.bak "s/export MIN_TC_VERSION=.*/export MIN_TC_VERSION=\"0.28.21\"/" "${SCRIPT_DIR}/env.sh"
 sed -i.bak "/export BOOST_VERSION=.*/d" "${SCRIPT_DIR}/env.sh"
 
 #################################################################
@@ -64,7 +65,7 @@ fi
 
 #################################################################
 # set node min block version
-sed -i.bak 's|export Node_Blk_Min_Ver=.*|export Node_Blk_Min_Ver=32|' "${SCRIPT_DIR}/env.sh"
+sed -i.bak 's|export Node_Blk_Min_Ver=.*|export Node_Blk_Min_Ver=33|' "${SCRIPT_DIR}/env.sh"
 
 #################################################################
 # Fix binaries names for new release 7-zip and old p7zip
