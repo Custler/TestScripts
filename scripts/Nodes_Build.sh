@@ -320,7 +320,7 @@ git clone --single-branch --branch ${Surf_GIT_Commit} ${CONTRACTS_GIT_REPO} "${C
 #     *)
 #         ;;
 # esac
-
+rm -f wget-log*
 echo 
 echo '################################################'
 BUILD_END_TIME=$(date +%s)
