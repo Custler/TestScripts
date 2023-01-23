@@ -43,7 +43,7 @@ DB_reset_ver="0051025"
 #===========================================================
 # Check Node Updated, GC set and restarted
 if [[ $Node_bin_ver_NUM -ge $DB_reset_ver ]] && \
-   [[ $Node_bin_ver_NUM -eq $Node_SVC_ver_NUM ]] &&
+   [[ $Node_bin_ver_NUM -eq $Node_SVC_ver_NUM ]] && \
    [[ "$(cat ${R_CFG_DIR}/config.json | jq '.gc.enable_for_archives' 2>/dev/null|cat)" == "true" ]];then
    echo "INFO: Check Node Updated - PASSED"
    exit 0
@@ -98,7 +98,7 @@ if [[ $Node_bin_ver_NUM -ge $DB_reset_ver ]] && \
         exit 1
     fi
     ${SCRIPT_DIR}/wait_for_sync.sh
-
+fi
 #===========================================================
 # Check and show the Node version
 EverNode_Version="$(${NODE_BIN_DIR}/rnode -V | grep -i 'TON Node, version' | awk '{print $4}')"

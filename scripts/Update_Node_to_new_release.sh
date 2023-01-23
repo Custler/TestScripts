@@ -46,10 +46,10 @@ if [[ -z $Node_remote_commit ]];then
     exit 1
 fi
 if [[ "$Node_bin_commit" !=  "$Node_local_commit" ]];then
-    "###-WARNING(line $LINENO): Commit from binary file is not equal git dir commit ($RNODE_SRC_DIR)"
+    echo "###-WARNING(line $LINENO): Commit from binary file is not equal git dir commit ($RNODE_SRC_DIR)"
 fi
 if [[ "$Node_bin_ver" != "$Node_SVC_ver" ]];then
-    "###-WARNING(line $LINENO): Running node version in service is not equal binary file version !!"
+    echo "###-WARNING(line $LINENO): Running node version ($Node_SVC_ver) in service is not equal binary file version ($Node_bin_ver)!!"
 fi
 #===========================================================
 # Update FreeBSD daemon script to avoide node service stuck
@@ -65,19 +65,18 @@ LNI_Info="$( get_LastNodeInfo )"
 if [[ "$(echo "$LNI_Info"|tail -n 1)" ==  "none" ]];then
     echo "###-WARNING(line $LINENO): Last node info from contract is empty."
 else
-    export LNIC_present=true
-    export Node_remote_commit=$(echo ${LNI_Info} | jq -r '.LastCommit')
-    export Console_commit=$(echo ${LNI_Info} | jq -r '.ConsoleCommit')
+    LNIC_present=true
+    Node_remote_commit=$(echo ${LNI_Info} | jq -r '.LastCommit')
+    Console_commit=$(echo ${LNI_Info} | jq -r '.ConsoleCommit')
     echo "LNIC present. New node commit: $Node_remote_commit, Console commit: $Console_commit"
 fi
 
 #===========================================================
 # Checking node need update
-
 if [[ "$Node_remote_commit" == "$Node_local_commit" ]] && \
-   [[ "$Node_remote_commit" == "$Node_bin_commit" ]] && \ 
+   [[ "$Node_remote_commit" == "$Node_bin_commit" ]] && \
    [[ "$Node_bin_ver" == "$Node_SVC_ver" ]];then
-    echo "---INFO: The Node seems is up to date, but possible you have to update scripts..."
+    echo "---INFO: The Node seems is up to date (ver $Node_bin_ver), but possible you have to update scripts..."
     echo "+++INFO: $(basename "$0") FINISHED $(date +%s) / $(date  +'%F %T %Z')"
     echo "================================================================================================"
     exit 0
