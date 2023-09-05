@@ -1,1 +1,1 @@
----INFO: This is only an update to the RFLD network global config.
+---INFO: This is only an update to the FLD network global config.
